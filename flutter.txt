@@ -1,0 +1,5 @@
+lib/
+├── models/           # For data models like User, Loan, Transaction
+├── services/         # For API services (HTTP requests)
+├── screens/          # For the UI screens like Login, Dashboard, Loans
+└── utils/            # For utility functions (e.g., error handling, constants)

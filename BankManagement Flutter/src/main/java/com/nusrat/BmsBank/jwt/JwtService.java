@@ -30,33 +30,34 @@ public class JwtService {
     private Claims extractAllClaims(String token) {
         return Jwts
                 .parser()
-                .verifyWith(getSecretKey())
+                .setSigningKey(getSecretKey())
                 .build()
-                .parseSignedClaims(token)
-                .getPayload();
+                .parseClaimsJws(token)
+                .getBody();
     }
 
     public String generateToken(User user) {
 
-        String token = Jwts
+        return Jwts
                 .builder()
-                .subject(user.getEmail())
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000))
+                .setSubject(user.getEmail())
+                .claim("role", user.getRole())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000))
                 .signWith(getSecretKey())
                 .compact();
 
-        return token;
+//        return token;
     }
-    public <T> T extractClaims(String token, Function<Claims, T> resolver) {
+    public <T> T extractClaim(String token, Function<Claims, T> resolver) {
         Claims claims = extractAllClaims(token);
         return resolver.apply(claims);
     }
     public String extractUsername(String token) {
-        return extractClaims(token, Claims::getSubject);
+        return extractClaim(token, Claims::getSubject);
     }
     private Date extractExpiration(String token) {
-        return extractClaims(token, Claims::getExpiration);
+        return extractClaim(token, Claims::getExpiration);
     }
     private boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
@@ -69,5 +70,10 @@ public class JwtService {
                 .map(t -> !t.isLoggedOut())
                 .orElse(false);
         return (username.equals(user.getUsername()) && !isTokenExpired(token) && validToken);
+    }
+
+    // Extracts the user's role from the token
+    public String extractUserRole(String token) {
+        return extractClaim(token, claims -> claims.get("role", String.class));
     }
 }

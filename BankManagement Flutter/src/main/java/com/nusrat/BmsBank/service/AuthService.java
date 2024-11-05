@@ -85,7 +85,7 @@ public class AuthService {
         user.setAccountNumber(userService.generateUniqueAccountNumber());
         user.setRole(Role.valueOf("USER"));
         user.setLock(true);
-        user.setStatus(false);
+        user.setStatus(true);
 
 
         userRepository.save(user);
@@ -130,8 +130,8 @@ public class AuthService {
 
         saveUserToken(jwt, user);
 
-        user.setPassword(null);
-        user.setTokens(null);
+//        user.setPassword(null);
+//        user.setTokens(null);
         return new AuthResponse(jwt,"User login was successful", user);
     }
 

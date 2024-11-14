@@ -1,4 +1,3 @@
-
 // import 'package:fintech_mobile_app/pages/transfer_money.dart';
 import 'package:bank2/screens/bank_statement_screen.dart';
 import 'package:bank2/screens/deposit_screen.dart';

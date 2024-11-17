@@ -79,6 +79,7 @@
 //   }
 // }
 import 'package:bank2/screens/dashboard.dart';
+import 'package:bank2/screens/loan_part/apply_loan_screen.dart';
 import 'package:bank2/screens/user_profile_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -94,8 +95,8 @@ class _UserDashboardScreenState extends State<UserDashboardScreen> {
 
   final List<Widget> pages = [
     Dashboard(),
-    // Add other pages here, like MyCardPage(), ScanPage(), etc.
-    Center(child: Text("Loan Details")),
+    // Center(child: Text("Loan Details")),
+    ApplyLoanScreen(),
     Center(child: Text("QR Scanner")),
     Center(child: Text("Activity")),
     // Center(child: Text("Profile")),
@@ -127,7 +128,7 @@ class _UserDashboardScreenState extends State<UserDashboardScreen> {
             icon: FloatingActionButton(
               onPressed: () => onTabTapped(2),
               backgroundColor: Color.fromARGB(255, 16, 80, 98),
-              child: Icon(Icons.qr_code_scanner, color: Colors.white),
+              child: Icon(Icons.qr_code, color: Colors.white),
               elevation: 0,
               mini: true,
             ),

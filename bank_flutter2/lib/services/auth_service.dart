@@ -71,9 +71,9 @@ class AuthService {
     String? userJson = prefs.getString('user');
 
     if (userJson != null) {
-      return jsonDecode(userJson); // Parse the JSON string and return as a Map
+      return jsonDecode(userJson);
     } else {
-      return null; // Return null if no user is found
+      return null;
     }
   }
 

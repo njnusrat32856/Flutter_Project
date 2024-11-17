@@ -195,13 +195,4 @@ class TransactionService {
     }
   }
 
-  Future<void> deleteTransaction(int id) async {
-    final headers = await _getAuthHeaders();
-    final response =
-        await http.delete(Uri.parse('$baseUrl/$id'), headers: headers);
-
-    if (response.statusCode != 200) {
-      throw Exception('Failed to delete transaction');
-    }
-  }
 }

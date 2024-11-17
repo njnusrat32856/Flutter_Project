@@ -127,7 +127,7 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
               style: TextStyle(fontSize: 14, color: Colors.grey[700]),
             ),
             SizedBox(height: 8),
-            Row(
+            Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(

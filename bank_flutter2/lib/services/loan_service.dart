@@ -17,9 +17,10 @@ class LoanService{
   }
 
   Future<List<Loan>> getAllLoans() async {
-    final response = await http.get(Uri.parse('$baseUrl/'));
+    final headers = await _getAuthHeaders();
+    final response = await http.get(Uri.parse('$baseUrl/'), headers: headers);
 
-    print(response.statusCode);
+    print(response.body);
 
     if (response.statusCode == 200) {
       final List<dynamic> loanData = json.decode(response.body);

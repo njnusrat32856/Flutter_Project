@@ -68,26 +68,44 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
         centerTitle: true,
         backgroundColor: Color.fromARGB(255, 16, 80, 98),
       ),
-      body: FutureBuilder<List<Transaction>>(
-        future: _transactions,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text("Error: ${snapshot.error}", style: TextStyle(color: Colors.red)));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text("No transactions available"));
-          } else {
-            return ListView.builder(
-              padding: EdgeInsets.all(10),
-              itemCount: snapshot.data!.length,
-              itemBuilder: (context, index) {
-                final transaction = snapshot.data![index];
-                return _buildTransactionCard(transaction);
-              },
-            );
-          }
-        },
+      body: Container(
+        padding: EdgeInsets.all(16.0),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color.fromARGB(255, 16, 80, 98), Color.fromARGB(255, 32, 160, 180)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: FutureBuilder<List<Transaction>>(
+                future: _transactions,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    print("Error in FutureBuilder: ${snapshot.error}");
+                    return Center(child: Text("Error: ${snapshot.error}", style: TextStyle(color: Colors.white)));
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return Center(child: Text("No transactions found", style: TextStyle(color: Colors.white)));
+                  } else {
+                    return ListView.builder(
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (context, index) {
+                        final transaction = snapshot.data![index];
+
+                        return _buildTransactionCard(transaction);
+                      },
+                    );
+                  }
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -123,23 +141,24 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
             ),
             SizedBox(height: 8),
             Text(
-              transaction.description,
-              style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+              "Date: ${transaction.transactionDate}",
+              style: TextStyle(fontSize: 14, color: Colors.grey[600]),
             ),
             SizedBox(height: 8),
-            Column(
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "Date: ${transaction.transactionDate}",
-                  style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                  transaction.description,
+                  style: TextStyle(fontSize: 14, color: Colors.grey[700]),
                 ),
                 Text(
                   "\$${transaction.amount.toStringAsFixed(2)}",
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: transaction.amount < 0 ? Colors.red : Colors.green,
+                    color: _getColorForTransactionType(transaction.transactionType),
+                    // color: transaction.transactionType < 0 ? Colors.red : Colors.green,
                   ),
                 ),
               ],
@@ -190,11 +209,11 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
   }
   IconData _getIconForTransactionType(String? type) {
     switch (type) {
-      case 'deposit':
+      case 'DEPOSIT':
         return Icons.arrow_downward;
-      case 'withdraw':
+      case 'WITHDRAW':
         return Icons.arrow_upward;
-      case 'fundTransfer':
+      case 'FUND_TRANSFER':
         return Icons.swap_horiz;
       default:
         return Icons.help_outline;
@@ -203,11 +222,11 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
 
   Color _getColorForTransactionType(String? type) {
     switch (type) {
-      case 'deposit':
+      case 'DEPOSIT':
         return Colors.green;
-      case 'withdraw':
+      case 'WITHDRAW':
         return Colors.red;
-      case 'fundTransfer':
+      case 'FUND_TRANSFER':
         return Colors.blue;
       default:
         return Colors.grey;

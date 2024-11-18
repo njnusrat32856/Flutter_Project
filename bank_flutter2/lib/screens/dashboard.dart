@@ -24,7 +24,7 @@ class Dashboard extends StatelessWidget {
                         SizedBox(height: 5,),
                         Text(
                           "BMSBank",
-                          style: TextStyle(color: Colors.white,fontSize: 24,
+                          style: TextStyle(color: Colors.white,fontSize: 30,
                               fontWeight: FontWeight.bold),
                         ),
                         // Text(

@@ -30,20 +30,23 @@ class Loan {
   });
 
   // Factory constructor to create a Loan from JSON
-  factory Loan.fromJson(Map<String, dynamic> json) {
+  factory Loan.fromJson(Map<String, dynamic>? json) {
+    if (json == null) {
+      throw Exception("Loan data is null");
+    }
     return Loan(
-      id: json['id'],
-      loanType: json['loanType'],
-      loanAmount: json['loanAmount'],
-      interestRate: json['interestRate'],
-      monthlyPayment: json['monthlyPayment'],
-      durationInMonths: json['durationInMonths'],
-      balanceRemaining: json['balanceRemaining'],
+      id: json['id'] ?? 0,
+      loanType: json['loanType'] ?? '',
+      loanAmount: json['loanAmount'] ?? 0.0,
+      interestRate: json['interestRate'] ?? 0.0,
+      monthlyPayment: json['monthlyPayment'] ?? 0.0,
+      durationInMonths: json['durationInMonths'] ?? 0,
+      balanceRemaining: json['balanceRemaining'] ?? 0.0,
       startDate: DateTime.parse(json['startDate']),
       endDate: DateTime.parse(json['endDate']),
-      status: json['status'],
-      paymentsMade: json['paymentsMade'],
-      user: User.fromJson(json['user']),
+      status: json['status'] ?? 'pending',
+      paymentsMade: json['paymentsMade'] ?? 0.0,
+      user: User.fromJson(json['user'] ?? {}),
     );
   }
 

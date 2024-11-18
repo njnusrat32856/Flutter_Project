@@ -80,6 +80,7 @@
 // }
 import 'package:bank2/screens/dashboard.dart';
 import 'package:bank2/screens/loan_part/apply_loan_screen.dart';
+import 'package:bank2/screens/loan_part/loans_other_activity_screen.dart';
 import 'package:bank2/screens/user_profile_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -98,7 +99,8 @@ class _UserDashboardScreenState extends State<UserDashboardScreen> {
     // Center(child: Text("Loan Details")),
     ApplyLoanScreen(),
     Center(child: Text("QR Scanner")),
-    Center(child: Text("Activity")),
+    // Center(child: Text("Activity")),
+    LoansOtherActivityScreen(),
     // Center(child: Text("Profile")),
     UserProfileScreen(),
   ];

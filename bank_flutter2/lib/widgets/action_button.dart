@@ -1,10 +1,8 @@
-// import 'package:fintech_mobile_app/pages/transfer_money.dart';
 import 'package:bank2/screens/bank_statement_screen.dart';
-import 'package:bank2/screens/deposit_screen.dart';
-import 'package:bank2/screens/transaction_list_screen.dart';
-import 'package:bank2/screens/transfer_screen.dart';
-import 'package:bank2/screens/user_profile_screen.dart';
-import 'package:bank2/screens/withdraw_screen.dart';
+import 'package:bank2/screens/transaction_part/deposit_screen.dart';
+import 'package:bank2/screens/transaction_part/transfer_screen.dart';
+import 'package:bank2/screens/transaction_part/withdraw_screen.dart';
+import 'package:bank2/services/auth_service.dart';
 import 'package:flutter/material.dart';
 
 class ActionButtons extends StatelessWidget {
@@ -58,12 +56,29 @@ class ActionButtons extends StatelessWidget {
             ActionButton(
               icon: Icons.apps_sharp,
               label: 'More',
-              onPressed: () {
-                Navigator.push(
+              onPressed: () async {
+
+                final authService = AuthService();
+                final user = await authService.getUser();
+
+                if (user != null && user['id'] != null) {
+
+                  int userId = user['id'];
+                  Navigator.push(
                     context,
-                    // MaterialPageRoute(builder: (context) => BankStatementScreen())
-                    MaterialPageRoute(builder: (context) => BankStatementScreen(userId: 3))
-                );
+                    MaterialPageRoute(
+                      builder: (context) => BankStatementScreen(userId: userId),
+                    ),
+                  );
+                } else {
+                  // Handle the case where the user is null or userId is not available
+                  print('User not found or invalid user data');
+                }
+                // Navigator.push(
+                //     context,
+                //     // MaterialPageRoute(builder: (context) => BankStatementScreen())
+                //     MaterialPageRoute(builder: (context) => BankStatementScreen(userId: 3))
+                // );
               },
             ),
           ],
@@ -72,6 +87,7 @@ class ActionButtons extends StatelessWidget {
     );
   }
 }
+
 class ActionButton extends StatelessWidget {
   const ActionButton({super.key, required this.icon, required this.label, this.onPressed});
 

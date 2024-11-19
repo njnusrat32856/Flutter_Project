@@ -42,8 +42,14 @@ class Loan {
       monthlyPayment: json['monthlyPayment'] ?? 0.0,
       durationInMonths: json['durationInMonths'] ?? 0,
       balanceRemaining: json['balanceRemaining'] ?? 0.0,
-      startDate: DateTime.parse(json['startDate']),
-      endDate: DateTime.parse(json['endDate']),
+      startDate: json['startDate'] != null
+          ? DateTime.parse(json['startDate'])
+          : DateTime.now(),
+      endDate: json['endDate'] != null
+          ? DateTime.parse(json['endDate'])
+          : DateTime.now(),
+      // startDate: DateTime.parse(json['startDate']),
+      // endDate: DateTime.parse(json['endDate'] ?? '2024-11-01'),
       status: json['status'] ?? 'pending',
       paymentsMade: json['paymentsMade'] ?? 0.0,
       user: User.fromJson(json['user'] ?? {}),

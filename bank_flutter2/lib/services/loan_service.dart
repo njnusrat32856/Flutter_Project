@@ -4,7 +4,7 @@ import 'package:bank2/models/loan.dart';
 import 'package:bank2/services/auth_service.dart';
 import 'package:http/http.dart' as http;
 
-class LoanService{
+class LoanService {
   final String baseUrl = 'http://localhost:8881/api/loans';
   final AuthService userService = AuthService();
 
@@ -58,10 +58,14 @@ class LoanService{
   // }
 
   Future<Loan> getLoanById(int id) async {
-    final response = await http.get(Uri.parse('$baseUrl/$id'));
+    final headers = await _getAuthHeaders();
+    final response =
+        await http.get(Uri.parse('$baseUrl/$id'), headers: headers);
 
     if (response.statusCode == 200) {
-      return json.decode(response.body);
+      final Map<String, dynamic> jsonResponse = json.decode(response.body);
+      return Loan.fromJson(jsonResponse);
+      // return json.decode(response.body);
     } else {
       throw Exception('Failed to load loan');
     }
@@ -70,7 +74,7 @@ class LoanService{
   Future<void> deleteLoan(int id) async {
     final headers = await _getAuthHeaders();
     final response =
-    await http.delete(Uri.parse('$baseUrl/delete/$id'), headers: headers);
+        await http.delete(Uri.parse('$baseUrl/delete/$id'), headers: headers);
 
     if (response.statusCode != 200) {
       throw Exception('Failed to delete loan');
@@ -92,14 +96,14 @@ class LoanService{
   Future<void> makeLoanPayment(int loanId, double paymentAmount) async {
     final headers = await _getAuthHeaders();
     final response = await http.put(
-      Uri.parse('$baseUrl/$loanId/payment'),
+      Uri.parse('$baseUrl/$loanId/payment?paymentAmount=$paymentAmount'),
       headers: headers,
       body: json.encode({'paymentAmount': paymentAmount}),
     );
 
     if (response.statusCode != 200) {
-      throw Exception(json.decode(response.body)['message'] ?? 'Payment failed');
+      throw Exception(
+          json.decode(response.body)['message'] ?? 'Payment failed');
     }
   }
-
 }

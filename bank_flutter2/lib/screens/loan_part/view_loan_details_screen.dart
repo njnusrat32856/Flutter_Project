@@ -1,4 +1,5 @@
 import 'package:bank2/models/loan.dart';
+import 'package:bank2/screens/loan_part/loan_payment_screen.dart';
 import 'package:bank2/services/loan_service.dart';
 import 'package:flutter/material.dart';
 
@@ -144,11 +145,11 @@ class _ViewLoanDetailsScreenState extends State<ViewLoanDetailsScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "Start Date: ${loan.startDate}",
+                  "Start Date: ${_formatDate(loan.startDate)}",
                   style: TextStyle(fontSize: 14, color: Colors.grey[700]),
                 ),
                 Text(
-                  "End Date: ${loan.endDate}",
+                  "End Date: ${_formatDate(loan.endDate)}",
                   style: TextStyle(fontSize: 14, color: Colors.grey[700]),
                 ),
               ],
@@ -157,8 +158,34 @@ class _ViewLoanDetailsScreenState extends State<ViewLoanDetailsScreen> {
 
             // Payments Made
             Text(
-              "Payments Made: \$${loan.paymentsMade.toStringAsFixed(2)}",
+              "Payments Made: ${loan.paymentsMade.toStringAsFixed(2)}",
               style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+            ),
+            SizedBox(height: 16),
+
+            // Payment Button
+            Align(
+              alignment: Alignment.centerRight,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color.fromARGB(255, 16, 80, 98),
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => LoanPaymentScreen(loanId: loan.id),
+                    ),
+                  );
+                },
+                child: Text(
+                    "Make Payment",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold
+                  ),
+                ),
+              ),
             ),
           ],
         ),

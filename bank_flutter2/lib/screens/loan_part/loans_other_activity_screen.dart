@@ -19,7 +19,7 @@ class LoansOtherActivityScreen extends StatelessWidget {
           // leading: IconButton.outlined(
           //     onPressed: () {}, icon: Icon(Icons.arrow_back_ios_new)),
           title: Text(
-            'Transactions Activity',
+            'Loan Activity',
             style: TextStyle(
               fontSize: 30,
               fontWeight: FontWeight.bold,
@@ -68,17 +68,17 @@ class LoansOtherActivityScreen extends StatelessWidget {
                           );
                         },
                       ),
-                      ActionButton(
-                        icon: Icons.payments,
-                        label: 'Pay Loans',
-                        onPressed: () {
-                          // here should be loan payments
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(builder: (context) => WithdrawScreen()),
-                          // );
-                        },
-                      ),
+                      // ActionButton(
+                      //   icon: Icons.payments,
+                      //   label: 'Pay Loans',
+                      //   onPressed: () {
+                      //     // here should be loan payments
+                      //     // Navigator.push(
+                      //     //   context,
+                      //     //   MaterialPageRoute(builder: (context) => WithdrawScreen()),
+                      //     // );
+                      //   },
+                      // ),
                       ActionButton(
                         icon: Icons.apps_sharp,
                         label: 'More',
@@ -252,7 +252,7 @@ class LoansOtherActivityScreen extends StatelessWidget {
                   child: Column(
                     children: [
                       Text(
-                        'Total Transactions',
+                        'Total Loans',
                         style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
@@ -262,7 +262,7 @@ class LoansOtherActivityScreen extends StatelessWidget {
                         height: 4,
                       ),
                       Text(
-                        '\$9432.00',
+                        '\$19432.00',
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,

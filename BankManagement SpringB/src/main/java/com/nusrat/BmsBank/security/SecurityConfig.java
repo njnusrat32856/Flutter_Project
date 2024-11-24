@@ -40,7 +40,7 @@ public class SecurityConfig {
                         .authorizeHttpRequests(
 
                                 req ->
-                                        req.requestMatchers("/login", "/register", "/activate/**", "user-profile", "api/transactions/",
+                                        req.requestMatchers("/login", "/register", "/activate/**","/images/**", "user-profile", "api/transactions/",
                                                         "api/transactions/deposit", "api/transactions/withdraw", "api/transactions/transfer",
                                                         "api/loans/", "api/loans/save","api/loans/{id}", "api/loans/delete/{id}" ,
                                                         "api/loans/{loanId}/payment", "api/loans/update/{id}",

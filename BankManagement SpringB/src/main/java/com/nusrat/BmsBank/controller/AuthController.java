@@ -4,6 +4,7 @@ import com.nusrat.BmsBank.entity.AuthResponse;
 import com.nusrat.BmsBank.entity.User;
 import com.nusrat.BmsBank.service.AuthService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +24,7 @@ public class AuthController {
 //        return ResponseEntity.ok(user);
 //    }
 
-    @PostMapping("/register")
+    @PostMapping(value = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<AuthResponse> register(
             @RequestBody User request,
             @RequestParam(value = "image", required = false) MultipartFile imagefile

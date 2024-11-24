@@ -45,6 +45,10 @@ dependencies:
   easy_sidemenu: ^0.6.0
   dio: ^5.7.0
   fl_chart: ^0.69.0
+  image_picker: ^1.1.2
+  image_picker_web: ^4.0.0
+  http_parser: ^4.0.2
+  dob_input_field: ^2.0.0
 
 dev_dependencies:
   flutter_test:

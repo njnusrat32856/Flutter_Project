@@ -19,6 +19,14 @@ public class CorsConfig implements WebMvcConfigurer{
                 .addResourceLocations("file:"+ uploadDir + '/');
     }
 
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+
+        registry.addMapping("/images/**")
+                .allowedOrigins("http://localhost:8801")  // Adjust as needed
+                .allowedMethods("GET", "POST", "OPTIONS");
+    }
+
 //    @Bean
 //    public WebMvcConfigurer corsConfigurer() {
 //        return new WebMvcConfigurer() {

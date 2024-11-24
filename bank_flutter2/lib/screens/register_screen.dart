@@ -2,9 +2,14 @@ import 'dart:convert';
 
 import 'package:bank2/screens/login_screen.dart';
 import 'package:date_field/date_field.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart' show Uint8List, kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:image_picker_web/image_picker_web.dart';
 
 class RegisterScreen extends StatefulWidget {
   @override
@@ -26,65 +31,222 @@ class _RegisterScreenState extends State<RegisterScreen> {
   String? selectedGender;
   String? selectedAccountType;
   DateTime? selectedDOB;
-  final _formKey = GlobalKey<FormState>();
 
-  void _register() async {
-    if (_formKey.currentState!.validate()) {
-      String uFirstName = firstName.text;
-      String uLastName = lastName.text;
-      String uEmail = email.text;
-      String uPassword = password.text;
-      String uMobileNo = mobileNo.text;
-      String uAddress = address.text;
-      String uNid = nid.text;
-      String uGender = selectedGender ?? 'Other';
-      String uDob = selectedDOB != null ? selectedDOB!.toIso8601String() : '';
-      // String uAccountType = accountType.text;
-      String uAccountType = selectedAccountType ?? 'Savings';
+  // Image Part
+  XFile? selectedImage;
+  Uint8List? webImage;
 
-      final response = await _sendDataToBackend(uFirstName, uLastName, uEmail,
-          uPassword, uMobileNo, uAddress, uNid, uGender, uDob, uAccountType);
+  final ImagePicker _picker = ImagePicker();
 
-      if (response.statusCode == 201 || response.statusCode == 200) {
-        print('Registration successful!');
-      } else if (response.statusCode == 409) {
-        print('User already exists!');
-      } else {
-        print('Registration failed with status: ${response.statusCode}');
+  Future<void> pickImage() async {
+    if (kIsWeb) {
+      var pickedImage = await ImagePickerWeb.getImageAsBytes();
+      if (pickedImage != null) {
+        setState(() {
+          webImage = pickedImage;
+        });
+      }
+    } else {
+      final XFile? pickedImage =
+          await _picker.pickImage(source: ImageSource.gallery);
+      if (pickedImage != null) {
+        setState(() {
+          selectedImage = pickedImage;
+        });
       }
     }
   }
 
-  Future<http.Response> _sendDataToBackend(
-      String firstName,
-      String lastName,
-      String email,
-      String password,
-      String mobileNo,
-      String address,
-      String nid,
-      String gender,
-      String dob,
-      String accountType) async {
-    const String url = 'http://localhost:8881/register';
-    final response = await http.post(
-      Uri.parse(url),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
-        'firstName': firstName,
-        'lastName': lastName,
-        'email': email,
-        'password': password,
-        'mobileNo': mobileNo,
-        'address': address,
-        'nid': nid,
-        'gender': gender,
-        'dob': dob,
-        'accountType': accountType
-      }),
+  // Future<bool> submitRegistration() async {
+  //   final user = {
+  //     'gender': selectedGender ?? 'Other',
+  //     'firstName': firstName.text,
+  //     'lastName': lastName.text,
+  //     'email': email.text,
+  //     'password': password.text,
+  //     'mobileNo': mobileNo.text,
+  //     'address': address.text,
+  //     'nid': nid.text,
+  //     'dob': selectedDOB != null ? selectedDOB!.toIso8601String() : ''
+  //   };
+  //
+  //   var uri = Uri.parse('http://localhost:8881/register');
+  //   var request = http.MultipartRequest('POST', uri);
+  //
+  //
+  //   request.files.add(
+  //     http.MultipartFile.fromString(
+  //       'user',
+  //       jsonEncode(user),
+  //       contentType: MediaType('application', 'json'),
+  //     ),
+  //   );
+  //
+  //   if (kIsWeb && webImage != null) {
+  //     request.files.add(http.MultipartFile.fromBytes(
+  //       'image',
+  //       webImage!,
+  //       filename: 'upload.jpg',
+  //       contentType: MediaType('image', 'jpeg'),
+  //     ));
+  //   } else if (selectedImage != null) {
+  //     request.files.add(await http.MultipartFile.fromPath(
+  //       'image',
+  //       selectedImage!.path,
+  //     ));
+  //   }
+  //
+  //
+  //   try {
+  //     var response = await request.send();
+  //     if (response.statusCode == 200) {
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         const SnackBar(content: Text('Registration successful!')),
+  //       );
+  //       print('Registration successful');
+  //       return true;
+  //     } else {
+  //       print('Failed to register. Status code: ${response.statusCode}');
+  //       return false;
+  //     }
+  //   } catch (e) {
+  //     print('Error occurred while submitting: $e');
+  //     return false;
+  //   }
+  // }
+
+  final _formKey = GlobalKey<FormState>();
+
+  Future<bool> _register() async {
+
+    final user = {
+      'gender': selectedGender ?? 'Other',
+      'firstName': firstName.text,
+      'lastName': lastName.text,
+      'email': email.text,
+      'password': password.text,
+      'mobileNo': mobileNo.text,
+      'address': address.text,
+      'nid': nid.text,
+
+      'dob': selectedDOB != null ? selectedDOB!.toIso8601String() : '',
+      'accountType': selectedAccountType ?? 'Savings'
+    };
+
+    var uri = Uri.parse('http://localhost:8881/register');
+    var request = http.MultipartRequest('POST', uri);
+
+
+    request.files.add(
+      http.MultipartFile.fromString(
+        'user',
+        jsonEncode(user),
+        contentType: MediaType('application', 'json'),
+      ),
     );
-    return response;
+
+    if (kIsWeb && webImage != null) {
+      request.files.add(http.MultipartFile.fromBytes(
+        'image',
+        webImage!,
+        filename: 'upload.jpg',
+        contentType: MediaType('image', 'jpeg'),
+      ));
+    } else if (selectedImage != null) {
+      request.files.add(await http.MultipartFile.fromPath(
+        'image',
+        selectedImage!.path,
+      ));
+    }
+
+
+    try {
+      var response = await request.send();
+      if (response.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Registration successful!')),
+        );
+        print('Registration successful');
+        return true;
+      } else {
+        print('Failed to register. Status code: ${response.statusCode}');
+        return false;
+      }
+    } catch (e) {
+      print('Error occurred while submitting: $e');
+      return false;
+    }
+
+
+    // if (_formKey.currentState!.validate()) {
+    //   String uFirstName = firstName.text;
+    //   String uLastName = lastName.text;
+    //   String uEmail = email.text;
+    //   String uPassword = password.text;
+    //   String uMobileNo = mobileNo.text;
+    //   String uAddress = address.text;
+    //   String uNid = nid.text;
+    //   String uGender = selectedGender ?? 'Other';
+    //   String uDob = selectedDOB != null ? selectedDOB!.toIso8601String() : '';
+    //
+    //   String uAccountType = selectedAccountType ?? 'Savings';
+    //
+    //
+    //   final response = await _sendDataToBackend(uFirstName, uLastName, uEmail,
+    //       uPassword, uMobileNo, uAddress, uNid, uGender, uDob, uAccountType);
+    //
+    //   if (response.statusCode == 201 || response.statusCode == 200) {
+    //     print('Registration successful!');
+    //   } else if (response.statusCode == 409) {
+    //     print('User already exists!');
+    //   } else {
+    //     print('Registration failed with status: ${response.statusCode}');
+    //   }
+    // }
   }
+
+  // Future<bool> submitRegister() async {
+  //
+  //   final user {
+  //     'firstName': firstName.text,
+  //     'lastName': lastName.text
+  //   };
+  //
+  //   return
+  // }
+
+  // Future<http.Response> _sendDataToBackend(
+  //     String firstName,
+  //     String lastName,
+  //     String email,
+  //     String password,
+  //     String mobileNo,
+  //     String address,
+  //     String nid,
+  //     String gender,
+  //     String dob,
+  //     String accountType
+  //
+  //     ) async {
+  //   const String url = 'http://localhost:8881/register';
+  //   final response = await http.post(
+  //     Uri.parse(url),
+  //     headers: {'Content-Type': 'application/json'},
+  //     body: jsonEncode({
+  //       'firstName': firstName,
+  //       'lastName': lastName,
+  //       'email': email,
+  //       'password': password,
+  //       'mobileNo': mobileNo,
+  //       'address': address,
+  //       'nid': nid,
+  //       'gender': gender,
+  //       'dob': dob,
+  //       'accountType': accountType
+  //     }),
+  //   );
+  //   return response;
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -120,15 +282,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
               child: Column(
                 children: [
                   // Image.file(file),
-                  CircleAvatar(
-                    radius: 40,
-                    backgroundColor: Colors.white,
-                    child: Icon(
-                      Icons.person_add,
-                      color: Color.fromARGB(255, 16, 80, 98),
-                      size: 50,
+                  ElevatedButton.icon(
+                    icon: const Icon(Icons.image),
+                    label: const Text('Upload Profile Picture'),
+                    onPressed: pickImage,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blueAccent,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     ),
                   ),
+                  // CircleAvatar(
+                  //   radius: 40,
+                  //   backgroundColor: Colors.white,
+                  //   child: Icon(
+                  //     Icons.person_add,
+                  //     color: Color.fromARGB(255, 16, 80, 98),
+                  //     size: 50,
+                  //   ),
+                  // ),
                   SizedBox(height: 20),
                   _buildTextField('First Name', firstName, Icons.person),
                   SizedBox(height: 20),
@@ -204,10 +376,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       });
                     },
                   ),
-                  // _buildTextField('Account Type', accountType, Icons.account_balance),
                   SizedBox(height: 20),
                   ElevatedButton(
-                    onPressed: _register,
+                    // onPressed: _register,
+                    onPressed: () async {
+                      bool isRegistered = await _register();
+                      if (isRegistered) {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Registration failed. Please try again.')),
+                        );
+                      }
+                    },
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: 12.0, horizontal: 40.0),

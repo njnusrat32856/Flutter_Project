@@ -31,6 +31,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   String? selectedGender;
   String? selectedAccountType;
   DateTime? selectedDOB;
+  bool isLoading = false;
 
   // Image Part
   XFile? selectedImage;
@@ -48,7 +49,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       }
     } else {
       final XFile? pickedImage =
-          await _picker.pickImage(source: ImageSource.gallery);
+          await ImagePicker().pickImage(source: ImageSource.gallery);
       if (pickedImage != null) {
         setState(() {
           selectedImage = pickedImage;
@@ -117,25 +118,142 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   final _formKey = GlobalKey<FormState>();
 
-  Future<bool> _register() async {
+  void _register() async {
+    if (_formKey.currentState!.validate()) {
+      final user = {
+        'firstName': firstName.text,
+        'lastName': lastName.text,
+        'email': email.text,
+        'password': password.text,
+        'mobileNo': mobileNo.text,
+        'address': address.text,
+        'nid': nid.text,
+        'gender': selectedGender ?? 'Other',
+        'dob': selectedDOB != null ? selectedDOB!.toIso8601String() : '',
+        'accountType': selectedAccountType ?? 'Savings'
+      };
 
-    final user = {
-      'gender': selectedGender ?? 'Other',
-      'firstName': firstName.text,
-      'lastName': lastName.text,
-      'email': email.text,
-      'password': password.text,
-      'mobileNo': mobileNo.text,
-      'address': address.text,
-      'nid': nid.text,
+      setState(() {
+        isLoading = true;
+      });
+      final response = await _sendDataToBackend(user);
 
-      'dob': selectedDOB != null ? selectedDOB!.toIso8601String() : '',
-      'accountType': selectedAccountType ?? 'Savings'
-    };
+      setState(() {
+        isLoading = false;
+      });
 
-    var uri = Uri.parse('http://localhost:8881/register');
-    var request = http.MultipartRequest('POST', uri);
+      if (response.statusCode == 201 || response.statusCode == 200) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => LoginScreen()),
+        );
+      } else {
+        print("Registration failed with status: ${response.statusCode}");
+      }
+    }
+  }
 
+  // Future<bool> _register() async {
+  //
+  //   final user = {
+  //     'gender': selectedGender ?? 'Other',
+  //     'firstName': firstName.text,
+  //     'lastName': lastName.text,
+  //     'email': email.text,
+  //     'password': password.text,
+  //     'mobileNo': mobileNo.text,
+  //     'address': address.text,
+  //     'nid': nid.text,
+  //
+  //     'dob': selectedDOB != null ? selectedDOB!.toIso8601String() : '',
+  //     'accountType': selectedAccountType ?? 'Savings'
+  //   };
+  //
+  //   var uri = Uri.parse('http://localhost:8881/register');
+  //   var request = http.MultipartRequest('POST', uri);
+  //
+  //
+  //   request.files.add(
+  //     http.MultipartFile.fromString(
+  //       'user',
+  //       jsonEncode(user),
+  //       contentType: MediaType('application', 'json'),
+  //     ),
+  //   );
+  //
+  //   if (kIsWeb && webImage != null) {
+  //     request.files.add(http.MultipartFile.fromBytes(
+  //       'image',
+  //       webImage!,
+  //       filename: 'upload.jpg',
+  //       contentType: MediaType('image', 'jpeg'),
+  //     ));
+  //   } else if (selectedImage != null) {
+  //     request.files.add(await http.MultipartFile.fromPath(
+  //       'image',
+  //       selectedImage!.path,
+  //     ));
+  //   }
+  //
+  //
+  //   try {
+  //     var response = await request.send();
+  //     if (response.statusCode == 200) {
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         const SnackBar(content: Text('Registration successful!')),
+  //       );
+  //       print('Registration successful');
+  //       return true;
+  //     } else {
+  //       print('Failed to register. Status code: ${response.statusCode}');
+  //       return false;
+  //     }
+  //   } catch (e) {
+  //     print('Error occurred while submitting: $e');
+  //     return false;
+  //   }
+  //
+  //
+  //   // if (_formKey.currentState!.validate()) {
+  //   //   String uFirstName = firstName.text;
+  //   //   String uLastName = lastName.text;
+  //   //   String uEmail = email.text;
+  //   //   String uPassword = password.text;
+  //   //   String uMobileNo = mobileNo.text;
+  //   //   String uAddress = address.text;
+  //   //   String uNid = nid.text;
+  //   //   String uGender = selectedGender ?? 'Other';
+  //   //   String uDob = selectedDOB != null ? selectedDOB!.toIso8601String() : '';
+  //   //
+  //   //   String uAccountType = selectedAccountType ?? 'Savings';
+  //   //
+  //   //
+  //   //   final response = await _sendDataToBackend(uFirstName, uLastName, uEmail,
+  //   //       uPassword, uMobileNo, uAddress, uNid, uGender, uDob, uAccountType);
+  //   //
+  //   //   if (response.statusCode == 201 || response.statusCode == 200) {
+  //   //     print('Registration successful!');
+  //   //   } else if (response.statusCode == 409) {
+  //   //     print('User already exists!');
+  //   //   } else {
+  //   //     print('Registration failed with status: ${response.statusCode}');
+  //   //   }
+  //   // }
+  // }
+
+  // Future<bool> submitRegister() async {
+  //
+  //   final user {
+  //     'firstName': firstName.text,
+  //     'lastName': lastName.text
+  //   };
+  //
+  //   return
+  // }
+
+  Future<http.Response> _sendDataToBackend(Map<String, String> user) async {
+    const String url = 'http://localhost:8881/register';
+    var request = http.MultipartRequest('POST', Uri.parse(url));
 
     request.files.add(
       http.MultipartFile.fromString(
@@ -159,61 +277,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
       ));
     }
 
-
-    try {
-      var response = await request.send();
-      if (response.statusCode == 200) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Registration successful!')),
-        );
-        print('Registration successful');
-        return true;
-      } else {
-        print('Failed to register. Status code: ${response.statusCode}');
-        return false;
-      }
-    } catch (e) {
-      print('Error occurred while submitting: $e');
-      return false;
-    }
-
-
-    // if (_formKey.currentState!.validate()) {
-    //   String uFirstName = firstName.text;
-    //   String uLastName = lastName.text;
-    //   String uEmail = email.text;
-    //   String uPassword = password.text;
-    //   String uMobileNo = mobileNo.text;
-    //   String uAddress = address.text;
-    //   String uNid = nid.text;
-    //   String uGender = selectedGender ?? 'Other';
-    //   String uDob = selectedDOB != null ? selectedDOB!.toIso8601String() : '';
-    //
-    //   String uAccountType = selectedAccountType ?? 'Savings';
-    //
-    //
-    //   final response = await _sendDataToBackend(uFirstName, uLastName, uEmail,
-    //       uPassword, uMobileNo, uAddress, uNid, uGender, uDob, uAccountType);
-    //
-    //   if (response.statusCode == 201 || response.statusCode == 200) {
-    //     print('Registration successful!');
-    //   } else if (response.statusCode == 409) {
-    //     print('User already exists!');
-    //   } else {
-    //     print('Registration failed with status: ${response.statusCode}');
-    //   }
-    // }
+    final response = await request.send();
+    return await http.Response.fromStream(response);
   }
-
-  // Future<bool> submitRegister() async {
-  //
-  //   final user {
-  //     'firstName': firstName.text,
-  //     'lastName': lastName.text
-  //   };
-  //
-  //   return
-  // }
 
   // Future<http.Response> _sendDataToBackend(
   //     String firstName,
@@ -253,7 +319,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'BMS BanK Ltd.',
+          'BMS Bank Ltd.',
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -289,7 +355,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blueAccent,
                       foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
                     ),
                   ),
                   // CircleAvatar(
@@ -365,7 +432,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   value: type,
                                   child: Text(
                                     type,
-                                    style: TextStyle(color: Colors.black,),
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                    ),
                                     // style: TextStyle(color: Colors.white, backgroundColor: Colors.teal[900]),
                                   ),
                                 ))
@@ -378,17 +447,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   SizedBox(height: 20),
                   ElevatedButton(
-                    // onPressed: _register,
-                    onPressed: () async {
-                      bool isRegistered = await _register();
-                      if (isRegistered) {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Registration failed. Please try again.')),
-                        );
-                      }
-                    },
+                    onPressed: _register,
+                    // onPressed: () async {
+                    //   bool isRegistered = await _register();
+                    //   if (isRegistered) {
+                    //     Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
+                    //   } else {
+                    //     ScaffoldMessenger.of(context).showSnackBar(
+                    //       const SnackBar(content: Text('Registration failed. Please try again.')),
+                    //     );
+                    //   }
+                    // },
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: 12.0, horizontal: 40.0),

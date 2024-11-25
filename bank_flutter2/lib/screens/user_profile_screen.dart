@@ -100,7 +100,17 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             CircleAvatar(
               radius: 50,
               // backgroundImage: NetworkImage(_user!.image, scale: 1.0),
-              backgroundColor: Colors.black26,
+              // backgroundColor: Colors.black26,
+              backgroundImage: _user?.image != null &&
+                  _user!.image!.isNotEmpty
+                  ? NetworkImage(
+                  "http://localhost:8881/images/${_user!.image!}")
+                  : const AssetImage(
+                  'assets/default_avatar.png')
+              as ImageProvider,
+              onBackgroundImageError: (error, stackTrace) {
+                debugPrint("Failed to load image: $error");
+              },
             ),
             SizedBox(height: 10),
             Text(

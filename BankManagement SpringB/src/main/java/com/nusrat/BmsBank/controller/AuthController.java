@@ -14,7 +14,7 @@ import java.io.IOException;
 
 @RestController
 @AllArgsConstructor
-
+@CrossOrigin(origins = "*")
 public class AuthController {
 
     private final AuthService authService;
@@ -26,10 +26,10 @@ public class AuthController {
 
     @PostMapping(value = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<AuthResponse> register(
-            @RequestBody User request,
+            @RequestPart User user,
             @RequestParam(value = "image", required = false) MultipartFile imagefile
             ) throws IOException {
-        return ResponseEntity.ok(authService.register(request, imagefile));
+        return ResponseEntity.ok(authService.register(user, imagefile));
     }
 
     @PostMapping("/login")

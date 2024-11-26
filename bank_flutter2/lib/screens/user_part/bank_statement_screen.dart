@@ -7,8 +7,6 @@ class BankStatementScreen extends StatefulWidget {
   // const BankStatementScreen({super.key});
   const BankStatementScreen({super.key, required this.userId});
 
-  // const BankStatementScreen({Key? key, required this.userId}) : super(key: key);
-
   @override
   State<BankStatementScreen> createState() => _BankStatementScreenState();
 }
@@ -17,13 +15,6 @@ class _BankStatementScreenState extends State<BankStatementScreen> {
   late Future<List<Transaction>> transactions;
   // late Future<List<Map<String, dynamic>>> transactions;
   final TransactionService transactionService = TransactionService();
-
-  // @override
-  // void initState() {
-  //   // TODO: implement initState
-  //   super.initState();
-  //   transactions = transactionService.getTransactions();
-  // }
 
   @override
   void initState() {
@@ -54,30 +45,6 @@ class _BankStatementScreenState extends State<BankStatementScreen> {
         centerTitle: true,
         backgroundColor: Color.fromARGB(255, 16, 80, 98),
       ),
-      // body: FutureBuilder<List<Transaction>>(
-      //   future: transactions,
-      //   builder: (context, snapshot) {
-      //     if (snapshot.connectionState == ConnectionState.waiting) {
-      //       print("object");
-      //       return Center(child: CircularProgressIndicator());
-      //     } else if (snapshot.hasError) {
-      //       print("Error in FutureBuilder: ${snapshot.error}");
-      //       return Center(child: Text("Error: ${snapshot.error}"));
-      //     } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-      //       print("Error");
-      //       return Center(child: Text("No transactions found", style: TextStyle(color: Colors.white)));
-      //     } else {
-      //       return ListView.builder(
-      //         itemCount: snapshot.data!.length,
-      //         itemBuilder: (context, index) {
-      //           final transaction = snapshot.data![index];
-      //
-      //           return _buildTransactionCard(transaction);
-      //         },
-      //       );
-      //     }
-      //   },
-      // ),
       body: Container(
         padding: EdgeInsets.all(16.0),
         decoration: BoxDecoration(
@@ -184,60 +151,4 @@ class _BankStatementScreenState extends State<BankStatementScreen> {
     }
   }
 
-
-// Widget _buildTransactionCard(Transaction transaction) {
-  //   return Card(
-  //     color: Colors.white.withOpacity(0.9),
-  //     margin: EdgeInsets.symmetric(vertical: 8.0),
-  //     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-  //     child: Column(
-  //       crossAxisAlignment: CrossAxisAlignment.start,
-  //       children: [
-  //       ListTile(
-  //         leading: Icon(
-  //           transaction.amount < 0 ? Icons.remove_circle : Icons.add_circle,
-  //           // transaction.amount < 0 ? Icons.remove_circle : Icons.add_circle,
-  //           color: transaction.amount < 0 ? Colors.red : Colors.green,
-  //         ),
-  //         title: Text(
-  //           transaction.description ?? 'no description',
-  //           style: TextStyle(fontWeight: FontWeight.bold),
-  //         ),
-  //         subtitle: Text(
-  //           transaction.transactionDate ?? 'no date',
-  //           style: TextStyle(color: Colors.grey[600]),
-  //         ),
-  //         trailing: Text(
-  //           "${transaction.amount < 0 ? "-" : "+"} \$${transaction.amount.abs().toStringAsFixed(2)}",
-  //           style: TextStyle(
-  //             fontWeight: FontWeight.bold,
-  //             color: transaction.amount < 0 ? Colors.red : Colors.green,
-  //           ),
-  //         ),
-  //       ),
-  //       ],
-  //     ),
-  //     // child: ListTile(
-  //     //   leading: Icon(
-  //     //     transaction.amount < 0 ? Icons.remove_circle : Icons.add_circle,
-  //     //     color: transaction.amount < 0 ? Colors.red : Colors.green,
-  //     //   ),
-  //     //   title: Text(
-  //     //     transaction.description,
-  //     //     style: TextStyle(fontWeight: FontWeight.bold),
-  //     //   ),
-  //     //   subtitle: Text(
-  //     //     transaction.transactionDate,
-  //     //     style: TextStyle(color: Colors.grey[600]),
-  //     //   ),
-  //     //   trailing: Text(
-  //     //     "${transaction.amount < 0 ? "-" : "+"} \$${transaction.amount.abs().toStringAsFixed(2)}",
-  //     //     style: TextStyle(
-  //     //       fontWeight: FontWeight.bold,
-  //     //       color: transaction.amount < 0 ? Colors.red : Colors.green,
-  //     //     ),
-  //     //   ),
-  //     // ),
-  //   );
-  // }
 }

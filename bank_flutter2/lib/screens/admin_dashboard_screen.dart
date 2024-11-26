@@ -1,4 +1,4 @@
-import 'package:bank2/screens/bank_statement_screen.dart';
+import 'package:bank2/screens/user_part/bank_statement_screen.dart';
 import 'package:bank2/screens/login_screen.dart';
 import 'package:bank2/screens/transaction_part/transaction_list_screen.dart';
 import 'package:flutter/material.dart';

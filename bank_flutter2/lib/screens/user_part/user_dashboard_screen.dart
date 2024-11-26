@@ -78,10 +78,11 @@
 //     });
 //   }
 // }
-import 'package:bank2/screens/dashboard.dart';
+import 'package:bank2/screens/my_card_page.dart';
+import 'package:bank2/screens/user_part/dashboard.dart';
 import 'package:bank2/screens/loan_part/apply_loan_screen.dart';
 import 'package:bank2/screens/loan_part/loans_other_activity_screen.dart';
-import 'package:bank2/screens/user_profile_screen.dart';
+import 'package:bank2/screens/user_part/user_profile_screen.dart';
 import 'package:flutter/material.dart';
 
 class UserDashboardScreen extends StatefulWidget {
@@ -97,7 +98,7 @@ class _UserDashboardScreenState extends State<UserDashboardScreen> {
   final List<Widget> pages = [
     Dashboard(),
     // Center(child: Text("Loan Details")),
-    ApplyLoanScreen(),
+    MyCardPage(),
     Center(child: Text("QR Scanner")),
     // Center(child: Text("Activity")),
     LoansOtherActivityScreen(),
@@ -124,7 +125,7 @@ class _UserDashboardScreenState extends State<UserDashboardScreen> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.credit_card),
-            label: "Loan Details",
+            label: "My Cards",
           ),
           BottomNavigationBarItem(
             icon: FloatingActionButton(

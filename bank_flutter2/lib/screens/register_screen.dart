@@ -349,12 +349,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 children: [
                   // Image.file(file),
                   ElevatedButton.icon(
-                    icon: const Icon(Icons.image),
-                    label: const Text('Upload Profile Picture'),
+                    icon: const Icon(Icons.image, color: Color.fromARGB(255, 16, 80, 98),),
+                    label: const Text('Upload Picture'),
                     onPressed: pickImage,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blueAccent,
-                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.white,
+                      foregroundColor: Color.fromARGB(255, 16, 80, 98),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12)),
                     ),
@@ -375,7 +375,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   SizedBox(height: 20),
                   _buildTextField('Email', email, Icons.email),
                   SizedBox(height: 20),
-                  _buildPasswordField('Password', password, Icons.password),
+                  _buildPasswordField('Password', password, Icons.lock),
                   SizedBox(height: 20),
                   _buildTextField('Mobile Number', mobileNo, Icons.phone),
                   SizedBox(height: 20),
@@ -542,6 +542,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         labelStyle: TextStyle(color: Colors.white70),
         prefixIcon: Icon(icon, color: Colors.white70),
       ),
+      obscureText: true,
       style: TextStyle(color: Colors.white),
     );
   }

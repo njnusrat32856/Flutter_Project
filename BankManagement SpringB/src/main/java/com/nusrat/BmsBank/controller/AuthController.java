@@ -19,10 +19,6 @@ public class AuthController {
 
     private final AuthService authService;
 
-//    @GetMapping("/user-profile")
-//    public ResponseEntity<User> getCurrentUser(@AuthenticationPrincipal User user) {
-//        return ResponseEntity.ok(user);
-//    }
 
     @PostMapping(value = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<AuthResponse> register(

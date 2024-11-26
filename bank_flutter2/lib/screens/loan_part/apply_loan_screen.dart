@@ -233,17 +233,8 @@ class _ApplyLoanScreenState extends State<ApplyLoanScreen> {
 }
 
 
-// import 'package:bank2/services/loan_service.dart';
-// import 'package:flutter/material.dart';
-//
-// class ApplyLoanScreen extends StatefulWidget {
-//   @override
-//   _ApplyLoanScreenState createState() => _ApplyLoanScreenState();
-// }
-//
-// class _ApplyLoanScreenState extends State<ApplyLoanScreen> {
 
-//
+
 //   @override
 //   Widget build(BuildContext context) {
 //     return Scaffold(
@@ -369,4 +360,4 @@ class _ApplyLoanScreenState extends State<ApplyLoanScreen> {
 //       ),
 //     );
 //   }
-// }
+

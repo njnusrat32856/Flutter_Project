@@ -11,11 +11,6 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
   final TransactionService _transactionService = TransactionService();
   late Future<List<Transaction>> _transactions;
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   _transactions = _transactionService.getAllTransactions();
-  // }
   @override
   void initState() {
     super.initState();

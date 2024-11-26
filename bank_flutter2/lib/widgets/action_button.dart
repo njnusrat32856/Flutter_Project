@@ -1,4 +1,4 @@
-import 'package:bank2/screens/bank_statement_screen.dart';
+import 'package:bank2/screens/user_part/bank_statement_screen.dart';
 import 'package:bank2/screens/transaction_part/deposit_screen.dart';
 import 'package:bank2/screens/transaction_part/transfer_screen.dart';
 import 'package:bank2/screens/transaction_part/withdraw_screen.dart';

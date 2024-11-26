@@ -1,4 +1,4 @@
-import 'package:bank2/screens/bank_statement_screen.dart';
+import 'package:bank2/screens/user_part/bank_statement_screen.dart';
 import 'package:bank2/screens/loan_part/apply_loan_screen.dart';
 import 'package:bank2/screens/loan_part/view_loan_details_screen.dart';
 import 'package:bank2/services/auth_service.dart';
@@ -36,6 +36,14 @@ class LoansOtherActivityScreen extends StatelessWidget {
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
+                Text(
+                  "Loan Details",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromARGB(255, 16, 80, 98),
+                  ),
+                ),
                 Container(
                   width: double.infinity,
                   alignment: Alignment.center,

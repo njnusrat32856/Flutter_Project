@@ -2,9 +2,6 @@ import 'package:bank2/models/loan.dart';
 import 'package:bank2/services/loan_service.dart';
 import 'package:flutter/material.dart';
 
-import 'package:flutter/material.dart';
-import 'package:bank2/models/loan.dart';
-import 'package:bank2/services/loan_service.dart';
 
 class LoanPaymentScreen extends StatelessWidget {
   final int loanId;
